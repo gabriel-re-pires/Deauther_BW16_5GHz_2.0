@@ -7,7 +7,7 @@
  * @param frame A pointer to the raw frame
  * @param size The size of the frame
 */
-void wifi_tx_raw_frame(void* frame, size_t length) {
+bool wifi_tx_raw_frame(void* frame, size_t length) {
   void *ptr = (void *)**(uint32_t **)(rltk_wlan_info + 0x10);
   void *frame_control = alloc_mgtxmitframe((uint8_t*)ptr + 0xae0);
 
@@ -19,7 +19,9 @@ void wifi_tx_raw_frame(void* frame, size_t length) {
     *(uint32_t *)((uint8_t*)frame_control + 0x14) = length;
     *(uint32_t *)((uint8_t*)frame_control + 0x18) = length;
     dump_mgntframe(ptr, frame_control);
+    return true;
   }
+  return false;
 }
 
 /*
@@ -28,13 +30,13 @@ void wifi_tx_raw_frame(void* frame, size_t length) {
  * @param dst_mac An array of bytes containing the destination mac address or FF:FF:FF:FF:FF:FF to broadcast the deauth
  * @param reason A reason code according to the 802.11 spec. Optional 
 */
-void wifi_tx_deauth_frame(void* src_mac, void* dst_mac, uint16_t reason) {
+bool wifi_tx_deauth_frame(void* src_mac, void* dst_mac, uint16_t reason) {
   DeauthFrame frame;
   memcpy(&frame.source, src_mac, 6);
   memcpy(&frame.access_point, src_mac, 6);
   memcpy(&frame.destination, dst_mac, 6);
   frame.reason = reason;
-  wifi_tx_raw_frame(&frame, sizeof(DeauthFrame));
+  return wifi_tx_raw_frame(&frame, sizeof(DeauthFrame));
 }
 
 /*
@@ -43,7 +45,7 @@ void wifi_tx_deauth_frame(void* src_mac, void* dst_mac, uint16_t reason) {
  * @param dst_mac An array of bytes containing the destination mac address or FF:FF:FF:FF:FF:FF to broadcast the beacon
  * @param ssid '\0' terminated array of characters representing the SSID
 */
-void wifi_tx_beacon_frame(void* src_mac, void* dst_mac, const char *ssid) {
+bool wifi_tx_beacon_frame(void* src_mac, void* dst_mac, const char *ssid) {
   BeaconFrame frame;
   memcpy(&frame.source, src_mac, 6);
   memcpy(&frame.access_point, src_mac, 6);
@@ -52,5 +54,5 @@ void wifi_tx_beacon_frame(void* src_mac, void* dst_mac, const char *ssid) {
     frame.ssid[i] = ssid[i];
     frame.ssid_length++;
   }
-  wifi_tx_raw_frame(&frame, 38 + frame.ssid_length);
+  return wifi_tx_raw_frame(&frame, 38 + frame.ssid_length);
 }
