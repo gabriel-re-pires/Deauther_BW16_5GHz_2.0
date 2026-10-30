@@ -6,8 +6,8 @@ Dispositivo desenvolvido para **auditoria e testes de segurança** em redes Wi-F
 >
 > **Este projeto existe exclusivamente para fins educacionais, de estudo de vulnerabilidades e de cibersegurança.**
 >
-> - Use **somente em ambientes controlados** e em **redes que são suas** ou para as quais você tem **autorização explícita e por escrito**.
-> - Atacar, interferir ou derrubar redes de terceiros **sem autorização é ilegal** na maioria dos países e pode resultar em responsabilização civil e criminal.
+> - Use **somente em ambientes controlados** e em **redes que são suas** ou as quais você tem **autorização**.
+> - Atacar, interferir ou derrubar redes de terceiros **sem autorização é ilegal**.
 > - O autor **não se responsabiliza** por qualquer uso indevido deste material.
 >
 > Se você não tem certeza se pode usar, **não use**.
