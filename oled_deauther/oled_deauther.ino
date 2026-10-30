@@ -12,7 +12,6 @@
 #include <SPI.h>
 #define SPI_MODE0 0x00
 #include "debug.h"
-#include <algorithm>
 #include <map>
 #include <vector>
 #include <Wire.h>
@@ -39,6 +38,10 @@ typedef struct {
   uint channel;
   bool isSelected;
 } WiFiScanResult;
+
+// Modos do ataque de deauth. Definido aqui no topo (antes das funcoes) para que
+// o prototipo gerado automaticamente pelo Arduino enxergue o tipo DeauthMode.
+enum DeauthMode { ATK_SELECTED, ATK_ALL, ATK_ALL_BUT_SELECTED };
 
 
 unsigned long prevTimeMon = 0;
@@ -96,11 +99,18 @@ int scanNetworks() {
   scan_results.clear();
   if (wifi_scan_networks(scanResultHandler, NULL) == RTW_SUCCESS) {
     delay(5000);
-    // Ordena por sinal: redes mais fortes primeiro (RSSI em dBm, maior = melhor)
-    std::sort(scan_results.begin(), scan_results.end(),
-              [](const WiFiScanResult &a, const WiFiScanResult &b) {
-                return a.rssi > b.rssi;
-              });
+    // Ordena por sinal: redes mais fortes primeiro (RSSI em dBm, maior = melhor).
+    // Insertion sort manual para nao depender de <algorithm> (o toolchain da
+    // BW16 tem uma macro 'rand' que quebra a compilacao desse header).
+    for (size_t i = 1; i < scan_results.size(); i++) {
+      WiFiScanResult key = scan_results[i];
+      int j = (int)i - 1;
+      while (j >= 0 && scan_results[j].rssi < key.rssi) {
+        scan_results[j + 1] = scan_results[j];
+        j--;
+      }
+      scan_results[j + 1] = key;
+    }
     DEBUG_SER_PRINT(" Done!\n");
     return 0;
   } else {
@@ -255,7 +265,6 @@ void drawScanScreen() {
 }
 
 // FUNÇÕES DE ATAQUE
-enum DeauthMode { ATK_SELECTED, ATK_ALL, ATK_ALL_BUT_SELECTED };
 
 // Tela de ataque em andamento, redesenhada ao vivo.
 // 'fail' conta frames recusados pelo driver (pool de TX esgotado): se esse
