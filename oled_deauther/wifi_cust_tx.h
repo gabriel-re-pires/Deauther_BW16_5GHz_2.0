@@ -38,8 +38,10 @@ extern "C" void* alloc_mgtxmitframe(void* ptr);
 extern "C" void update_mgntframe_attrib(void* ptr, void* frame_control);
 extern "C" int dump_mgntframe(void* ptr, void* frame_control);
 
-void wifi_tx_raw_frame(void* frame, size_t length);
-void wifi_tx_deauth_frame(void* src_mac, void* dst_mac, uint16_t reason = 0x06);
-void wifi_tx_beacon_frame(void* src_mac, void* dst_mac, const char *ssid);
+// Retornam true quando o frame foi efetivamente alocado e enviado ao driver,
+// e false quando alloc_mgtxmitframe devolveu 0 (pool de TX esgotado).
+bool wifi_tx_raw_frame(void* frame, size_t length);
+bool wifi_tx_deauth_frame(void* src_mac, void* dst_mac, uint16_t reason = 0x06);
+bool wifi_tx_beacon_frame(void* src_mac, void* dst_mac, const char *ssid);
 
 #endif
