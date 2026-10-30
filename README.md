@@ -52,6 +52,12 @@ Para gravar o dispositivo você precisa apenas do **sketch** e das **bibliotecas
 
 Depois de descompactar, use as pastas `oled_deauther` (o sketch, abre no Arduino IDE) e `RTL8720DN_SSD1306_FIX` (bibliotecas do display ajustadas para a BW16).
 
+**Download mínimo (só o essencial para gravar — sketch + bibliotecas):**
+
+- [**Baixar só o essencial (`.zip`)**](https://github.com/gabriel-re-pires/Deauther_BW16_5GHz_2.0/raw/main/Deauther_minimo.zip)
+
+Pacote enxuto (~94 KB), sem fotos, exemplos ou fontes não usadas — apenas o que compila e grava na placa.
+
 ## Medida defensiva
 
 Este dispositivo explora uma fragilidade dos **frames de gerenciamento 802.11** (deauth/beacon), que em redes WPA/WPA2 **não são autenticados**. Para proteger a sua rede contra esse tipo de ataque, tome as medidas:
