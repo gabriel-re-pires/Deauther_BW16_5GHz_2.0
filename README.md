@@ -46,10 +46,11 @@ Serve como ferramenta de **estudo de vulnerabilidades e cibersegurança**, demon
 
 Para gravar o dispositivo você precisa apenas do **sketch** e das **bibliotecas corrigidas**.
 
-**Downloads diretos:**
+**Download (instantâneo — projeto completo em `.zip`):**
 
--  [Baixar o sketch `oled_deauther`](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2Fgabriel-re-pires%2FDeauther%2Ftree%2Fmain%2Foled_deauther) — abre no Arduino IDE.
--  [Baixar as bibliotecas `RTL8720DN_SSD1306_FIX`](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2Fgabriel-re-pires%2FDeauther%2Ftree%2Fmain%2FRTL8720DN_SSD1306_FIX) — versões do display ajustadas para a BW16.
+- [**Baixar o projeto completo (`.zip`)**](https://github.com/gabriel-re-pires/Deauther_BW16_5GHz_2.0/archive/refs/heads/main.zip)
+
+Depois de descompactar, use as pastas `oled_deauther` (o sketch, abre no Arduino IDE) e `RTL8720DN_SSD1306_FIX` (bibliotecas do display ajustadas para a BW16).
 
 ## Medida defensiva
 
